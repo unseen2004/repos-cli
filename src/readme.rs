@@ -64,7 +64,10 @@ pub fn update_readme(path: &Path) -> Result<()> {
                 // Skip hidden dirs and target/node_modules
                 if let Some(name) = dir_path.file_name().and_then(|n| n.to_str()) {
                     if !name.starts_with('.') && name != "target" && name != "node_modules" {
-                        update_readme(dir_path)?;
+                        if let Err(e) = update_readme(dir_path) {
+                            tracing::error!("Failed to update README for {:?}: {}", dir_path, e);
+                            eprintln!("Warning: Failed to update README for {:?}: {}", dir_path, e);
+                        }
                     }
                 }
             }

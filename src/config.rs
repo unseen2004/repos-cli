@@ -6,7 +6,6 @@ use std::fs;
 
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct GlobalConfig {
-    pub github_token: Option<String>,
     pub github_username: Option<String>,
     #[serde(default)]
     pub tracked_repos: Vec<PathBuf>,
