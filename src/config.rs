@@ -91,3 +91,36 @@ pub fn add_repo(path: PathBuf) -> Result<()> {
     println!("Added repository to tracking list: {:?}", path);
     Ok(())
 }
+
+pub fn remove_repo(path: PathBuf) -> Result<()> {
+    let path = fs::canonicalize(path).context("Failed to resolve path")?;
+    
+    let mut config = load_global_config()?;
+    
+    if let Some(pos) = config.tracked_repos.iter().position(|p| p == &path) {
+        config.tracked_repos.remove(pos);
+        save_global_config(&config)?;
+        println!("Removed repository from tracking list: {:?}", path);
+    } else {
+        println!("Repository is not being tracked: {:?}", path);
+    }
+    
+    Ok(())
+}
+
+pub fn list_tracked_repos() -> Result<()> {
+    let config = load_global_config()?;
+    
+    if config.tracked_repos.is_empty() {
+        println!("No tracked repositories.");
+        return Ok(());
+    }
+    
+    println!("Tracked repositories:");
+    for (i, repo) in config.tracked_repos.iter().enumerate() {
+        let status = if repo.exists() { "✓" } else { "✗" };
+        println!("  {} [{}] {:?}", i + 1, status, repo);
+    }
+    
+    Ok(())
+}

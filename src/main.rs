@@ -29,6 +29,13 @@ enum Commands {
         /// Path to the repository
         path: PathBuf,
     },
+    /// Remove a repository from tracking
+    Remove {
+        /// Path to the repository
+        path: PathBuf,
+    },
+    /// Show all tracked repositories
+    Tracked,
     /// Update READMEs for tracked repositories
     Update {
         /// Optional path to update specific repo (must be tracked)
@@ -59,6 +66,12 @@ async fn main() -> Result<()> {
         }
         Commands::Add { path } => {
             config::add_repo(path)?;
+        }
+        Commands::Remove { path } => {
+            config::remove_repo(path)?;
+        }
+        Commands::Tracked => {
+            config::list_tracked_repos()?;
         }
         Commands::Update { path } => {
             if let Some(p) = path {

@@ -53,6 +53,16 @@ Track repositories:
 repos-cli add /path/to/your/repo
 ```
 
+Remove repositories from tracking:
+```bash
+repos-cli remove /path/to/your/repo
+```
+
+Show tracked repositories:
+```bash
+repos-cli tracked
+```
+
 Update READMEs:
 ```bash
 repos-cli update
@@ -83,6 +93,8 @@ dependencies = true
 docker = true
 categorizer = true
 ```
+
+See `.repos-cli.toml.example` for a complete configuration file with detailed documentation and usage examples.
 
 ## How It Works
 
