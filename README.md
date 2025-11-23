@@ -1,18 +1,33 @@
 # Repos CLI
 
-A Rust-based CLI tool to manage GitHub repositories and automatically update README.md files with dynamic content.
+A production-ready Rust CLI tool for automating README.md updates across your GitHub repositories.
+
+Automatically generate and maintain README content with tech stack badges, dependency lists, changelogs, Docker commands, and project structure—all synced with your codebase.
 
 ## Features
 
-- **Authentication**: Securely login with GitHub PAT.
-- **Repository Management**: List your GitHub repositories.
-- **Auto-Updates**: Automatically update READMEs with:
-    - Tech Stack Badges
-    - Dependency Lists
-    - Docker Build Commands
-    - Recent Changelogs
-    - Sub-project Structure (for monorepos)
-- **Recursive**: Updates all sub-projects in a directory tree.
+**Secure Authentication**
+- GitHub Personal Access Token (PAT) authentication
+- Credentials stored in system keyring (encrypted, never in plain text)
+- Supports Linux (Secret Service), macOS (Keychain), Windows (Credential Manager)
+
+**Auto-Generated README Content**
+- Tech Stack Badges: Shields.io badges based on file extensions
+- Dependency Lists: Summarizes packages from `package.json`, `Cargo.toml`, `requirements.txt`
+- Docker Commands: Auto-generates build/run commands if `Dockerfile` exists
+- Changelogs: Recent git commit history
+- Project Structure: Lists sub-projects in monorepos
+
+**Recursive Updates**
+- Automatically updates nested project READMEs
+- Detects and processes sub-projects (any directory with `Cargo.toml`, `package.json`, etc.)
+- Configurable per-directory with `.repos-cli.toml`
+
+**Production-Ready**
+- Secure credential storage (system keyring)
+- Graceful error handling with structured logging
+- Automated integration tests
+- No crashes from malformed files or permission issues
 
 ## Installation
 
@@ -20,24 +35,73 @@ A Rust-based CLI tool to manage GitHub repositories and automatically update REA
 cargo install --path .
 ```
 
+Or use a pre-built binary:
+```bash
+cargo build --release
+cp target/release/repos-cli /usr/local/bin/
+```
+
 ## Usage
 
-1. **Login**:
-   ```bash
-   repos-cli auth login
-   ```
+Authenticate with GitHub:
+```bash
+repos-cli auth login
+```
 
-2. **Track a Repository**:
-   ```bash
-   repos-cli add /path/to/repo
-   ```
+Track repositories:
+```bash
+repos-cli add /path/to/your/repo
+```
 
-3. **Update READMEs**:
-   ```bash
-   repos-cli update
-   ```
+Update READMEs:
+```bash
+repos-cli update
+```
+
+List your GitHub repositories:
+```bash
+repos-cli list
+```
 
 ## Configuration
 
-Global configuration is stored in your system's config directory (e.g., `~/.config/repos-cli` on Linux).
-Local configuration can be added to repositories via `.repos-cli.toml`.
+Global config is stored at `~/.config/repos-cli/config.toml`:
+```toml
+github_username = "your-username"
+tracked_repos = ["/path/to/repo1", "/path/to/repo2"]
+```
+
+Local config (`.repos-cli.toml`) can be added to any repository:
+```toml
+auto_update = true
+
+[features]
+badges = true
+emoji = true
+changelog = true
+dependencies = true
+docker = true
+categorizer = true
+```
+
+## How It Works
+
+Generated content is injected between markers in your README:
+
+```markdown
+<!-- REPOS-CLI:START -->
+(Auto-generated content)
+<!-- REPOS-CLI:END -->
+```
+
+Content outside the markers is preserved.
+
+## Security
+
+- Credentials stored in OS-native encrypted keyring
+- Config files contain only non-sensitive data
+- Credentials never committed to version control
+
+## License
+
+MIT
