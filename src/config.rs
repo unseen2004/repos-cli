@@ -8,6 +8,8 @@ use std::fs;
 pub struct GlobalConfig {
     pub github_username: Option<String>,
     #[serde(default)]
+    pub github_token: Option<String>, // Fallback if keyring unavailable
+    #[serde(default)]
     pub tracked_repos: Vec<PathBuf>,
 }
 
